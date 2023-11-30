@@ -1,10 +1,7 @@
-import React from "react";
+// TimersView.js
+import React, { useState } from "react";
 import styled from "styled-components";
-
-import Stopwatch from "../components/timers/Stopwatch";
-import Countdown from "../components/timers/Countdown";
-import XY from "../components/timers/XY";
-import Tabata from "../components/timers/Tabata";
+import { Link } from "react-router-dom";
 
 const Timers = styled.div`
   display: flex;
@@ -13,7 +10,7 @@ const Timers = styled.div`
 `;
 
 const Timer = styled.div`
-  border: 1px solid gray;
+  position: relative;
   padding: 20px;
   margin: 10px;
   font-size: 1.5rem;
@@ -21,22 +18,89 @@ const Timer = styled.div`
 
 const TimerTitle = styled.div``;
 
-const TimersView = () => {
-  const timers = [
-    { C: <Stopwatch /> },
-    { title: "Countdown", C: <Countdown /> },
-    { title: "XY", C: <XY /> },
-    { title: "Tabata", C: <Tabata /> },
-  ];
+const RemoveButton = styled.button`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+`;
+
+const AddButton = styled(Link)`
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 80%; /* Adjust the width as needed */
+  margin-bottom: 20px;
+`;
+
+const ControlButton = styled.button`
+  padding: 10px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+`;
+
+const TimersView = ({ timers, onRemoveTimer }) => {
+  const [removeMessage, setRemoveMessage] = useState("");
+
+  const handleRemove = (index) => {
+    const updatedTimers = [...timers];
+    const removedTimer = updatedTimers.splice(index, 1)[0];
+
+    // Call the parent component's remove timer function
+    onRemoveTimer(updatedTimers, removedTimer);
+
+    // Display remove message
+    setRemoveMessage(
+      removedTimer
+        ? `Timer "${removedTimer.title}" successfully removed.`
+        : "Failed to remove timer."
+    );
+
+    // Clear the message after a few seconds
+    setTimeout(() => {
+      setRemoveMessage("");
+    }, 3000);
+  };
 
   return (
     <Timers>
-      {timers.map((timer) => (
-        <Timer key={`timer-${timer.title}`}>
-          <TimerTitle>{timer.title}</TimerTitle>
-          {timer.C}
-        </Timer>
-      ))}
+      <ButtonGroup>
+        <ControlButton>Pause</ControlButton>
+        <ControlButton>Play</ControlButton>
+        <ControlButton>Reset</ControlButton>
+        <ControlButton>Fast Forward</ControlButton>
+      </ButtonGroup>
+      {timers.length > 0 ? (
+        timers.map((timer, index) => (
+          <Timer key={index}>
+            <TimerTitle>{timer.title}</TimerTitle>
+            {timer.C}
+            <RemoveButton onClick={() => handleRemove(index)}>Remove</RemoveButton>
+          </Timer>
+        ))
+      ) : (
+        <>
+          <div>Configure your timers!</div>
+          <AddButton to="/add">Add</AddButton>
+        </>
+      )}
+      {removeMessage && <div>{removeMessage}</div>}
     </Timers>
   );
 };
