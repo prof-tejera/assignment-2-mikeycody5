@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import Button from "../timers/shared/button.js";
 import DisplayTime from "../timers/shared/DisplayTime.js";
 import Panel from "../timers/shared/Panel.js";
@@ -6,18 +6,21 @@ import Input from "../timers/shared/input.js";
 import ProgressBar from "../timers/shared/ProgressBar.js";
 import DisplayRounds from "../timers/shared/DisplayRounds";
 import { FaPlay, FaPause, FaFastForward } from "react-icons/fa";
+import { GlobalContext } from "../../App.js";
 
-const Tabata = () => {
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
+const Tabata = (props) => {
+  const minutes = props.minutes
+  const seconds = props.seconds
+  const rounds = props.rounds
+  const index = index
   const [initialTime, setInitialTime] = useState(0);
   const [time, setTime] = useState(0);
   const [running, setRunning] = useState(false);
-  const [rounds, setRounds] = useState(1);
   const [currentRound, setCurrentRound] = useState(1);
   const [isResting, setIsResting] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [progress, setProgress] = useState(0);
+  const { activeIndex, pausedIndex, isPaused, timers, setTimers } = useContext(GlobalContext);
 
   useCallback(() => {
     setCurrentRound((prevRound) => prevRound + 1);
@@ -102,18 +105,48 @@ const Tabata = () => {
     setRunning(false);
   };
 
+  const handleSetMinutes = (mins) => {
+    const timerToEdit = timers[index]
+    const updatedTimer = {...timerToEdit, C: <Tabata minutes={mins} seconds={props.seconds} rounds={props.rounds} index={index} /> }
+    const timersCopy = [...timers]
+    timersCopy.splice(index, 1, updatedTimer);
+    setTimers(timersCopy)
+  
+    console.log({timers, index: index, mins, timerToEdit})
+  }
+
+  const handleSetSeconds = (secs) => {
+    const timerToEdit = timers[index]
+    const updatedTimer = {...timerToEdit, C: <Tabata minutes={props.minutes} seconds={secs} rounds={props.rounds} index={index} /> }
+    const timersCopy = [...timers]
+    timersCopy.splice(index, 1, updatedTimer);
+    setTimers(timersCopy)
+  
+    console.log({timers, index: index, timerToEdit})
+  }
+
+  const handleSetRounds = (rnds) => {
+    const timerToEdit = timers[index]
+    const updatedTimer = {...timerToEdit, C: <Tabata minutes={props.minutes} seconds={props.seconds} rounds={rnds} index={index} /> }
+    const timersCopy = [...timers]
+    timersCopy.splice(index, 1, updatedTimer);
+    setTimers(timersCopy)
+  
+    console.log({timers, index: index, timerToEdit})
+  }
+
   return (
     <div className="timer">
       <DisplayRounds
         currentRound={currentRound}
         initialRounds={rounds}
-        onRoundsChange={setRounds}
+        onRoundsChange={handleSetRounds}
       />
       <Input
-        minutes={minutes}
-        setMinutes={setMinutes}
-        seconds={seconds}
-        setSeconds={setSeconds}
+        minutes={props.minutes}
+        setMinutes={handleSetMinutes}
+        seconds={props.seconds}
+        setSeconds={handleSetSeconds}
         disabled={running}
         onStart={handleStart}
       />

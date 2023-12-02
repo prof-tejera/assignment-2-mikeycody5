@@ -1,7 +1,7 @@
-// TimersView.js
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { GlobalContext } from "../App.js";
 
 const Timers = styled.div`
   display: flex;
@@ -27,8 +27,12 @@ const AddButton = styled(Link)`
   font-size: 1.2rem;
 `;
 
-const TimersView = ({ timers }) => {
+const TimersView = () => {
+  const { activeIndex, setActiveIndex, isPaused, setIsPaused, setPausedIndex, timers, setTimers } =
+  useContext(GlobalContext);
   return (
+    <div>
+      {timers.length > 0 ? <button onClick={setActiveIndex(0)}>Start</button>:null}
     <Timers>
       {timers.length > 0 ? (
         timers.map((timer, index) => (
@@ -42,6 +46,7 @@ const TimersView = ({ timers }) => {
       )}
       <AddButton to="/add">Add</AddButton>
     </Timers>
+    </div>
   );
 };
 

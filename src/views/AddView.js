@@ -121,10 +121,10 @@ const TimerButtons = styled.div`
 `;
 
 
-const AddView = ({ onAddTimer, onRemoveTimer }) => {
+const AddView = ({ onRemoveTimer }) => {
   const [timerConfig, setTimerConfig] = useState({});
   const [timerQueue, setTimerQueue] = useState([]);
-  const { activeIndex, setActiveIndex, isPaused, setIsPaused, setPausedIndex } =
+  const { activeIndex, setActiveIndex, isPaused, setIsPaused, setPausedIndex, timers, setTimers } =
   useContext(GlobalContext);
   const TIMERS = [
     {
@@ -146,12 +146,14 @@ const AddView = ({ onAddTimer, onRemoveTimer }) => {
     // handleAddTimer(<Stopwatch />, "Stopwatch")
 
     let component;
+    const timersLength = timers.length
+    const index = timersLength
 
     if (timerItem.componentType === "COUNTDOWN") {
-      component = <Countdown />;
+      component = <Countdown minutes={0} seconds={0} index={index} />;
     }
     if (timerItem.componentType === "TABATA") {
-      component = <Tabata />;
+      component = <Tabata minutes={0} seconds={0} rounds={3} index={index}/>;
     }
     if (timerItem.componentType === "STOPWATCH") {
       component = <Stopwatch />;
@@ -160,8 +162,10 @@ const AddView = ({ onAddTimer, onRemoveTimer }) => {
       component = <XY />;
     }
     const timerWithComponent = { ...timerItem, component: component };
-    setTimerQueue([...timerQueue, timerWithComponent]);
-    onAddTimer({ title: timerItem.title, C: component });
+    const newTimersQueue = [...timers, {...timerItem, title: timerItem.title, C: component, index: timersLength, key: timersLength}]
+    setTimers(newTimersQueue)
+    /*setTimerQueue([...timerQueue, timerWithComponent]);*/
+    // onAddTimer({ title: timerItem.title, C: component });
     // Reset the timer configuration for the next addition if needed
     setTimerConfig({});
   };
@@ -179,8 +183,9 @@ const AddView = ({ onAddTimer, onRemoveTimer }) => {
         />
       );
     }*/
-  const renderComponent = (componentType, index) => {
+  /*const renderComponent = (componentType, index) => {
     let component;
+    console.log(componentType);
     if (componentType === "COUNTDOWN") {
       component = <Countdown index={index} />;
     }
@@ -194,7 +199,7 @@ const AddView = ({ onAddTimer, onRemoveTimer }) => {
       component = <XY index={index} />;
     }
     return component;
-  };
+  };*/
 
   const handleRemoveTimer = (index) => {
     const updatedTimers = [...timerQueue];
@@ -224,13 +229,13 @@ const AddView = ({ onAddTimer, onRemoveTimer }) => {
         ))}
       </ButtonGroup>
       <div>
-      <PlayPauseContainer>
+      {/* <PlayPauseContainer>
         <PlayPauseButton
           onClick={() => {
             if (isPaused) {
               setPausedIndex(null);
               setIsPaused(false);
-              setActiveIndex(activeIndex + 1);
+            //   setActiveIndex(activeIndex + 1);
             } else {
               setIsPaused(true);
               setPausedIndex(activeIndex);
@@ -239,18 +244,18 @@ const AddView = ({ onAddTimer, onRemoveTimer }) => {
         >
           {isPaused ? <FaPlay /> : <FaPause />}
         </PlayPauseButton>
-      </PlayPauseContainer>
+      </PlayPauseContainer> */}
       </div>
       <Timers>
         <TimerGroup>
             
             
-          {timerQueue.map((queueItem, index) => {
+          {timers.map((queueItem, index) => {
             return (
               <Timer key={queueItem.key}>
                 <TimerTitle>{queueItem.title}</TimerTitle>
-                {renderComponent(queueItem.componentType, index )} {/* queueItem.userInput,
-                handleTimerComplete*/}
+                {/* {renderComponent(queueItem.componentType, index )} {/* queueItem.userInput, */}
+                {queueItem.C}
                 <TimerButtons>
                   <StyledRemoveButton onClick={() => handleRemoveTimer(index)}>
                     Remove

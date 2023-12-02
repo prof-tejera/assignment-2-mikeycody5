@@ -34,12 +34,12 @@ export const GlobalContext = createContext(null);
 
 const App = () => {
   const [timers, setTimers] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(700);
+  const [activeIndex, setActiveIndex] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
   const [pausedIndex, setPausedIndex] = useState();
-  const handleAddTimer = (newTimer) => {
+  /*const handleAddTimer = (newTimer) => {
     setTimers([...timers, newTimer]);
-  };
+  };*/
 
   const handleRemoveTimer = (updatedTimers, removedTimer) => {
     setTimers(updatedTimers);
@@ -51,9 +51,16 @@ const App = () => {
     console.log("global state active index:", activeIndex);
   }, [activeIndex]);
 
+  useEffect(() => {
+    console.log("array", timers);
+  }, [timers]);
+
+
   return (
     <GlobalContext.Provider
       value={{
+        timers,
+        setTimers,
         activeIndex,
         setActiveIndex,
         isPaused,
@@ -70,12 +77,12 @@ const App = () => {
             <Route
               path="/"
               element={
-                <TimersView timers={timers} />
+                <TimersView />
               }
             />
             <Route
               path="/add"
-              element={<AddView onAddTimer={handleAddTimer} onRemoveTimer={handleRemoveTimer}/>}
+              element={<AddView onRemoveTimer={handleRemoveTimer}/>}
             />
           </Routes>
         </Router>
