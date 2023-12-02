@@ -1,5 +1,5 @@
 // App.js
-import React, { useState } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import styled from "styled-components";
 import DocumentationView from "./views/DocumentationView";
@@ -30,9 +30,13 @@ const Nav = () => {
   );
 };
 
+export const GlobalContext = createContext(null);
+
 const App = () => {
   const [timers, setTimers] = useState([]);
-
+  const [activeIndex, setActiveIndex] = useState(700);
+  const [isPaused, setIsPaused] = useState(false);
+  const [pausedIndex, setPausedIndex] = useState();
   const handleAddTimer = (newTimer) => {
     setTimers([...timers, newTimer]);
   };
@@ -43,27 +47,43 @@ const App = () => {
     console.log("Removed Timer:", removedTimer);
   };
 
+  useEffect(() => {
+    console.log("global state active index:", activeIndex);
+  }, [activeIndex]);
+
   return (
-    <Container>
-      <Router>
-        <Nav />
-        <Routes>
-          <Route
-            path="/docs"
-            element={<DocumentationView />}
-          />
-          <Route
-            path="/"
-            element={<TimersView timers={timers} onRemoveTimer={handleRemoveTimer} />}
-          />
-          <Route
-            path="/add"
-            element={<AddView onAddTimer={handleAddTimer} />}
-          />
-        </Routes>
-      </Router>
-    </Container>
+    <GlobalContext.Provider
+      value={{
+        activeIndex,
+        setActiveIndex,
+        isPaused,
+        setIsPaused,
+        pausedIndex,
+        setPausedIndex,
+      }}
+    >
+      <Container>
+        <Router>
+          <Nav />
+          <Routes>
+            <Route path="/docs" element={<DocumentationView />} />
+            <Route
+              path="/"
+              element={
+                <TimersView timers={timers} />
+              }
+            />
+            <Route
+              path="/add"
+              element={<AddView onAddTimer={handleAddTimer} onRemoveTimer={handleRemoveTimer}/>}
+            />
+          </Routes>
+        </Router>
+      </Container>
+    </GlobalContext.Provider>
   );
 };
 
 export default App;
+
+
