@@ -10,10 +10,33 @@ const Countdown = (props) => {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [time, setTime] = useState(0);
+  
+    /*const [time, setTime] = useState((props.minutes * 60 + props.seconds) * 1000);*/
+  
   const [running, setRunning] = useState(false);
   const { activeIndex, pausedIndex, isPaused } = useContext(GlobalContext);
   const isActive = props.index === activeIndex;
   const isTimerPaused = props.index === pausedIndex && isPaused; // will need to setRunning(false)
+
+
+  /* 
+useEffect(() => {
+  let interval;
+
+  if (running && time > 0) {
+    interval = setInterval(() => {
+      setTime((prevTime) => prevTime - 1000);
+    }, 1000);
+  } else {
+    clearInterval(interval);
+
+    if (time === 0 && onComplete) {
+      onComplete();
+    }
+  }
+
+  return () => clearInterval(interval);
+}, [running, time, onComplete]); */
 
   useEffect(() => {
     let interval;
