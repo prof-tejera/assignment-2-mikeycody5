@@ -1,56 +1,37 @@
 import React, { useState, useEffect, useContext } from "react";
-import Button from "../timers/shared/button.js";
 import DisplayTime from "../timers/shared/DisplayTime.js";
-import Panel from "../timers/shared/Panel.js";
-import Input from "../timers/shared/input.js"; // Adjust the import path
-import { FaPlay, FaPause, FaFastForward } from "react-icons/fa"; // Import the fast forward icon
+import Input from "../timers/shared/input.js"; 
 import { GlobalContext } from "../../App.js";
 
 const Countdown = (props) => {
-  const minutes = props.minutes
-  const seconds = props.seconds
-  const index = props.index
-  // const [time, setTime] = useState(0);
-  
+  const minutes = props.minutes;
+  const seconds = props.seconds;
+  const index = props.index;
   const [time, setTime] = useState((props.minutes * 60 + props.seconds) * 1000);
-  
   const [running, setRunning] = useState(false);
-  const { activeIndex, pausedIndex, isPaused, timers, setTimers, setActiveIndex } = useContext(GlobalContext);
+  const {
+    activeIndex,
+    pausedIndex,
+    isPaused,
+    timers,
+    setTimers,
+    setActiveIndex,
+    timerIsRunning,
+  } = useContext(GlobalContext);
   const isActive = props.index === activeIndex;
   const isTimerPaused = props.index === pausedIndex && isPaused; // will need to setRunning(false)
-
-
-  /* 
-useEffect(() => {
-  let interval;
-
-  if (running && time > 0) {
-    interval = setInterval(() => {
-      setTime((prevTime) => prevTime - 1000);
-    }, 1000);
-  } else {
-    clearInterval(interval);
-
-    if (time === 0 && onComplete) {
-      onComplete();
-    }
-  }
-
-  return () => clearInterval(interval);
-}, [running, time, onComplete]); */
 
   useEffect(() => {
     let interval;
 
-    if (isActive && time > 0) {
-      console.log(activeIndex);
-      debugger
+    if (isActive && time > 0 && timerIsRunning) {
+      console.log({ index, activeIndex });
       interval = setInterval(() => {
         setTime((prevTime) => prevTime - 1000);
       }, 1000);
-    } else if (isActive && time === 0){
-      debugger
-      setActiveIndex(index + 1)
+    } else if (isActive && time === 0) {
+      console.log({ index, activeIndex });
+      setActiveIndex(index + 1);
       clearInterval(interval);
     }
 
@@ -59,14 +40,11 @@ useEffect(() => {
 
   useEffect(() => {
     if (isActive) {
-      console.log("THIS IS ACTIVe");
-      /*if (!running) {
-        if (time === 0) {
-          setTime((minutes * 60 + seconds) * 1000);
-        }
-      setRunning(true);
-    }*/
-  }
+      console.log("Countdown.js global state active index:", {
+        activeIndex,
+        countdownJsIndex: index,
+      });
+    }
   }, [props, activeIndex]);
 
   useEffect(() => {
@@ -75,54 +53,30 @@ useEffect(() => {
     }
   }, [props, pausedIndex, isPaused, isTimerPaused]);
 
-  const handleStart = () => {
-    /*debugger
-    if (!running) {
-      if (time === 0) {
-        setTime((minutes * 60 + seconds) * 1000);
-      }
-
-      setRunning(true);
-    }*/
-  };
-
-  const handleStop = () => {
-    setRunning(false);
-  };
-
-  const handleReset = () => {
-    setTime((minutes * 60 + seconds) * 1000);
-    if (running) {
-      setRunning(false);
-    }
-  };
-
-  const handleFastForward = () => {
-    // setActiveIndex(props.index + 1);
-    setRunning(false);
-    setTime(0);
-  };
+  
 
   const handleSetMinutes = (mins) => {
-    const timerToEdit = timers[props.index]
-    const updatedTimer = {...timerToEdit, C: <Countdown minutes={mins} seconds={props.seconds} index={props.index} /> }
-    const timersCopy = [...timers]
+    const timerToEdit = timers[props.index];
+    const updatedTimer = {
+      ...timerToEdit,
+      minutes: mins,
+    };
+    const timersCopy = [...timers];
     timersCopy.splice(props.index, 1, updatedTimer);
-    setTimers(timersCopy)
-  
-    console.log({timers, index: props.index, mins, timerToEdit})
-  }
+    setTimers(timersCopy);
+  };
 
   const handleSetSeconds = (secs) => {
-    const timerToEdit = timers[props.index]
-    const updatedTimer = {...timerToEdit, C: <Countdown minutes={props.minutes} seconds={secs} index={props.index} /> }
-    const timersCopy = [...timers]
+    const timerToEdit = timers[props.index];
+    const updatedTimer = {
+      ...timerToEdit,
+      seconds: secs,
+    };
+    const timersCopy = [...timers];
     timersCopy.splice(props.index, 1, updatedTimer);
-    setTimers(timersCopy)
-  
-    console.log({timers, index: props.index, timerToEdit})
-  }
- 
+    setTimers(timersCopy);
+  };
+
   return (
     <div className="countdown">
       <Input
@@ -131,111 +85,11 @@ useEffect(() => {
         seconds={props.seconds}
         setSeconds={handleSetSeconds}
         disabled={running}
-        onStart={handleStart}
       />
       <DisplayTime time={time} />
-      <Panel>
-        {running ? (
-          <Button onClick={handleStop}>
-            <FaPause />
-          </Button>
-        ) : (
-          <Button onClick={handleStart}>
-            <FaPlay />
-          </Button>
-        )}
-        <Button onClick={handleReset}>RESET</Button>
-        <Button onClick={handleFastForward}>
-          <FaFastForward />
-        </Button>
-      </Panel>
+      
     </div>
   );
 };
 
 export default Countdown;
-
-
-/*import React, { useState, useEffect } from "react";
-import Button from "../timers/shared/button.js";
-import DisplayTime from "../timers/shared/DisplayTime.js";
-import Panel from "../timers/shared/Panel.js";
-import Input from "../timers/shared/input.js"; 
-import { FaPlay, FaPause, FaFastForward } from "react-icons/fa"; 
-
-const Countdown = () => {
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
-  const [time, setTime] = useState(0);
-  const [running, setRunning] = useState(false);
-
-  useEffect(() => {
-    let interval;
-
-    if (running && time > 0) {
-      interval = setInterval(() => {
-        setTime((prevTime) => prevTime - 1000);
-      }, 1000);
-    } else {
-      clearInterval(interval);
-    }
-
-    return () => clearInterval(interval);
-  }, [running, time]);
-
-  const handleStart = () => {
-    if (!running) {
-      if (time === 0) {
-        setTime((minutes * 60 + seconds) * 1000);
-      }
-      setRunning(true);
-    }
-  };
-
-  const handleStop = () => {
-    setRunning(false);
-  };
-
-  const handleReset = () => {
-    setTime((minutes * 60 + seconds) * 1000);
-    if (running) {
-      setRunning(false);
-    }
-  };
-
-  const handleFastForward = () => {
-    setRunning(false);
-    setTime(0);
-  };
-
-  return (
-    <div className="countdown">
-      <Input
-        minutes={minutes}
-        setMinutes={setMinutes}
-        seconds={seconds}
-        setSeconds={setSeconds}
-        disabled={running}
-        onStart={handleStart}
-      />
-      <DisplayTime time={time} />
-      <Panel>
-        {running ? (
-          <Button onClick={handleStop}>
-            <FaPause />
-          </Button>
-        ) : (
-          <Button onClick={handleStart}>
-            <FaPlay />
-          </Button>
-        )}
-        <Button onClick={handleReset}>RESET</Button>
-        <Button onClick={handleFastForward}>
-          <FaFastForward />
-        </Button>
-      </Panel>
-    </div>
-  );
-};
-
-export default Countdown;*/

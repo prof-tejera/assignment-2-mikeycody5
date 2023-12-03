@@ -19,36 +19,36 @@ const InputContainer = styled.div`
   background-position: 0 0, 10px 10px, 20px 20px, 15px 15px;
 `;
 
-const Label = styled.label`
+const LabelContainer = styled.div`
   flex: 1;
-  font-weight: 400;
+  align-items: center;
+  border-radius: 25px;
+  margin: 10px;
+  background-color: black;
+`;
+
+const Label = styled.label`
+  flex: 1; 
+  font-weight: 300;
   font-size: 16px;
-  padding: 5px 10px;
-  margin: 5px;
-  background-color: #630000;
-  color: red;
+  background-color: black;
+  color: #fff;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
-  box-shadow: inset 0 0 5px 2px rgba(0, 0, 0, 0.4);
-  box-sizing: border-box;
 `;
 
 const SelectInput = styled.select`
   flex: 1;
   font-weight: 300;
   font-size: 16px;
-  padding: 5px 10px;
-  margin: 5px;
-  background-color: #630000;
-  color: red;
+  padding: 7px;
+  margin: 10px 0px 10px 10px;
+  background-color: darkred;
+  color: #fff;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
+  border-radius: 25px;
   transition: background-color 0.3s;
-  box-shadow: inset 0 0 5px 2px rgba(0, 0, 0, 0.4);
-  box-sizing: border-box;
 
   &:hover {
     background-color: black;
@@ -70,23 +70,27 @@ const Input = ({ minutes, setMinutes, seconds, setSeconds, disabled, onStart }) 
 
   return (
     <InputContainer>
-      <Label>MINUTES</Label>
-      <SelectInput
-        value={minutes}
-        onChange={(e) => setMinutes(Number(e.target.value))}
-        disabled={disabled}
-      >
-        {renderOptions(0, 59)}
-      </SelectInput>
+      <LabelContainer>
+        <Label>MINUTES:</Label>
+        <SelectInput
+          value={minutes}
+          onChange={(e) => setMinutes(Number(e.target.value))}
+          disabled={disabled}
+        >
+          {renderOptions(0, 59)}
+        </SelectInput>
+      </LabelContainer>
 
-      <Label>SECONDS</Label>
-      <SelectInput
-        value={seconds}
-        onChange={(e) => setSeconds(Number(e.target.value))}
-        disabled={disabled}
-      >
-        {renderOptions(0, 59)}
-      </SelectInput>
+      <LabelContainer>
+        <Label>SECONDS:</Label>
+        <SelectInput
+          value={seconds}
+          onChange={(e) => setSeconds(Number(e.target.value))}
+          disabled={disabled}
+        >
+          {renderOptions(0, 59)}
+        </SelectInput>
+      </LabelContainer>
     </InputContainer>
   );
 };

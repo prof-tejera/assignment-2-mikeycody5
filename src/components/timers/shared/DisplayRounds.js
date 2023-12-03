@@ -19,34 +19,35 @@ const DisplayRoundsContainer = styled.div`
   background-position: 0 0, 10px 10px, 20px 20px, 15px 15px;
 `;
 
-const DisplayRoundsLabel = styled.label`
+const LabelContainer = styled.div`
   flex: 1;
-  font-weight: 400;
-  font-size: 16px;
-  padding: 5px 10px;
-  margin: 5px;
-  background-color: #630000;
-  color: red;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  box-shadow: inset 0 0 5px 2px rgba(0, 0, 0, 0.4);
+  align-items: center;
+  border-radius: 25px;
+  margin: 10px;
+  background-color: black;
 `;
 
+const DisplayRoundsLabel = styled.label`
+flex: 1; 
+font-weight: 300;
+font-size: 16px;
+background-color: black;
+color: #fff;
+border: none;
+cursor: pointer;
+`;
 const DisplayRoundsSelect = styled.select`
-  flex: 1;
+flex: 1;
   font-weight: 300;
   font-size: 16px;
-  padding: 5px 10px;
-  margin: 5px;
-  background-color: #630000;
-  color: red;
+  padding: 7px;
+  margin: 10px 0px 10px 10px;
+  background-color: darkred;
+  color: #fff;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
+  border-radius: 25px;
   transition: background-color 0.3s;
-  box-shadow: inset 0 0 5px 2px rgba(0, 0, 0, 0.4);
 
   &:hover {
     background-color: black;
@@ -81,6 +82,7 @@ const DisplayRounds = ({ currentRound, initialRounds, onRoundsChange, disabled, 
 
   return (
     <DisplayRoundsContainer>
+      <LabelContainer>
       <DisplayRoundsLabel>
         ROUND {currentRound} / {rounds}
       </DisplayRoundsLabel>
@@ -91,6 +93,7 @@ const DisplayRounds = ({ currentRound, initialRounds, onRoundsChange, disabled, 
       >
         {renderOptions(1, 100)}
       </DisplayRoundsSelect>
+      </LabelContainer>
     </DisplayRoundsContainer>
   );
 };
