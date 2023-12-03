@@ -48,7 +48,7 @@ const XY = (props) => {
     }
 
     return () => clearInterval(interval);
-  }, [running, time, initialTime, currentRound, rounds, activeIndex, setActiveIndex,index, isActive, timerIsRunning]);
+  }, [running, time, initialTime, currentRound, rounds, activeIndex, setActiveIndex,]);
 
   const handleSetMinutes = (mins) => {
     const timerToEdit = timers[props.index];

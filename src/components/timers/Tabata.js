@@ -76,7 +76,7 @@ const Tabata = (props) => {
     }
   
     return () => clearInterval(interval);
-  }, [running, time, isResting, initialTime, currentRound, rounds, activeIndex, setActiveIndex, index, isActive, timerIsRunning]);
+  }, [running, time, isResting, initialTime, currentRound, rounds, activeIndex, setActiveIndex,]);
   
 
   
