@@ -20,14 +20,11 @@ const Tabata = (props) => {
   const {
     setActiveIndex,
     activeIndex,
-    pausedIndex,
-    isPaused,
     timers,
     setTimers,
     timerIsRunning,
   } = useContext(GlobalContext);
   const isActive = props.index === activeIndex;
-  const isTimerPaused = props.index === pausedIndex && isPaused;
 
 
   const calculateProgress = () => {
@@ -79,7 +76,7 @@ const Tabata = (props) => {
     }
   
     return () => clearInterval(interval);
-  }, [running, time, isResting, initialTime, currentRound, rounds, activeIndex, setActiveIndex]);
+  }, [running, time, isResting, initialTime, currentRound, rounds, activeIndex, setActiveIndex, index, isActive, timerIsRunning]);
   
 
   

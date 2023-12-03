@@ -8,15 +8,12 @@ const Countdown = (props) => {
   const [time, setTime] = useState((props.minutes * 60 + props.seconds) * 1000);
   const {
     activeIndex,
-    pausedIndex,
-    isPaused,
     timers,
     setTimers,
     setActiveIndex,
     timerIsRunning,
   } = useContext(GlobalContext);
   const isActive = props.index === activeIndex;
-  const isTimerPaused = props.index === pausedIndex && isPaused; 
 
   useEffect(() => {
     let interval;
@@ -33,22 +30,7 @@ const Countdown = (props) => {
     }
 
     return () => clearInterval(interval);
-  }, [time, activeIndex]);
-
-  useEffect(() => {
-    if (isActive) {
-      console.log("Countdown.js global state active index:", {
-        activeIndex,
-        countdownJsIndex: index,
-      });
-    }
-  }, [props, activeIndex]);
-
-  useEffect(() => {
-    if (isTimerPaused) {
-      console.log("I am paused- timer should stop running");
-    }
-  }, [props, pausedIndex, isPaused, isTimerPaused]);
+  }, [time, activeIndex, index, isActive, setActiveIndex, timerIsRunning]);
 
   
 
