@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/assignment-2-mikeycody5/static/css/main.02971024.chunk.css",
+    "main.js": "/assignment-2-mikeycody5/static/js/main.7ebfde12.chunk.js",
+    "main.js.map": "/assignment-2-mikeycody5/static/js/main.7ebfde12.chunk.js.map",
+    "runtime-main.js": "/assignment-2-mikeycody5/static/js/runtime-main.a50e9d75.js",
+    "runtime-main.js.map": "/assignment-2-mikeycody5/static/js/runtime-main.a50e9d75.js.map",
+    "static/js/2.21dc12e8.chunk.js": "/assignment-2-mikeycody5/static/js/2.21dc12e8.chunk.js",
+    "static/js/2.21dc12e8.chunk.js.map": "/assignment-2-mikeycody5/static/js/2.21dc12e8.chunk.js.map",
+    "index.html": "/assignment-2-mikeycody5/index.html",
+    "precache-manifest.ed7404c9b898baf8d09b394bea566bf9.js": "/assignment-2-mikeycody5/precache-manifest.ed7404c9b898baf8d09b394bea566bf9.js",
+    "service-worker.js": "/assignment-2-mikeycody5/service-worker.js",
+    "static/css/main.02971024.chunk.css.map": "/assignment-2-mikeycody5/static/css/main.02971024.chunk.css.map",
+    "static/js/2.21dc12e8.chunk.js.LICENSE.txt": "/assignment-2-mikeycody5/static/js/2.21dc12e8.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a50e9d75.js",
+    "static/js/2.21dc12e8.chunk.js",
+    "static/css/main.02971024.chunk.css",
+    "static/js/main.7ebfde12.chunk.js"
+  ]
+}
