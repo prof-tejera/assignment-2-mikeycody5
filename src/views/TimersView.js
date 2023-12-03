@@ -99,7 +99,9 @@ const renderComponent = (timerItem, index) => {
     );
   }
   if (timerItem.componentType === "STOPWATCH") {
-    component = <Stopwatch index={index} />;
+    component = <Stopwatch index={index}
+    minutes={timerItem.minutes}
+    seconds={timerItem.seconds} />;
   }
   if (timerItem.componentType === "XY") {
     component = <XY 
@@ -119,7 +121,6 @@ const TimersView = () => {
     setIsPaused,
     setTimerIsRunning,
     timers,
-    setTimers,
   } = useContext(GlobalContext);
 
   const handleFastForward = () => {
@@ -130,7 +131,7 @@ const TimersView = () => {
 
   const handlePausePlay = () => {
     setTimerIsRunning(!setTimerIsRunning);
-    setIsPaused(!isPaused);
+    setIsPaused(true);
   };
 
   return (

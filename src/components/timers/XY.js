@@ -1,115 +1,105 @@
-import React, { useState, useEffect, useCallback, } from "react";
-import Button from "../timers/shared/button.js";
+import React, { useState, useEffect, useContext } from "react";
 import DisplayTime from "../timers/shared/DisplayTime.js";
-import Panel from "../timers/shared/Panel.js";
-import Input from "../timers/shared/input.js";
+import Input from "../timers/shared/input.js"; 
 import DisplayRounds from "../timers/shared/DisplayRounds";
-import { FaPlay, FaPause, FaFastForward } from "react-icons/fa";
+import { GlobalContext } from "../../App.js";
 
-const XY = () => {
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
-  const [initialTime, setInitialTime] = useState(0);
-  const [time, setTime] = useState(0);
+const XY = (props) => {
+  const rounds = props.rounds;
+  const index = props.index;
+  const initialTime = (props.minutes * 60 + props.seconds) * 1000;
+
+  const [time, setTime] = useState(initialTime);
   const [running, setRunning] = useState(false);
-  const [rounds, setRounds] = useState(1);
   const [currentRound, setCurrentRound] = useState(1);
 
-  const handleNextRound = useCallback(() => {
-    if (currentRound < rounds) {
-      setCurrentRound(currentRound + 1);
-      setTime(initialTime);
-      setRunning(true);
-    }
-  }, [currentRound, rounds, initialTime]);
+  const {
+    setActiveIndex,
+    activeIndex,
+    timers,
+    setTimers,
+    timerIsRunning,
+  } = useContext(GlobalContext);
 
-  const handleTimerFinish = useCallback(() => {
-    if (currentRound < rounds) {
-      handleNextRound();
-    } else {
-      setCurrentRound(1);
-      setTime(0);
-      setRunning(false);
-    }
-  }, [currentRound, rounds, handleNextRound]);
+  const isActive = props.index === activeIndex;
 
   useEffect(() => {
     let interval;
 
-    if (running && time > 0) {
+    if (isActive && time > 0 && timerIsRunning) {
       interval = setInterval(() => {
-        setTime((prevTime) => prevTime - 1000);
+        setTime((prevTime) => Math.max(0, prevTime - 1000));
       }, 1000);
-    } else if (running && time === 0) {
+    } else if (isActive && time === 0) {
       clearInterval(interval);
-      handleTimerFinish();
+      setCurrentRound((prevRound) => prevRound + 1);
+
+      if (currentRound >= rounds) {
+        setActiveIndex(index + 1);
+        setCurrentRound(1);
+        setTime(0);
+        setRunning(false);
+      } else {
+        setTime(initialTime);
+        setRunning(true);
+      }
     } else {
       clearInterval(interval);
     }
 
     return () => clearInterval(interval);
-  }, [running, time, handleTimerFinish]);
+  }, [running, time, initialTime, currentRound, rounds, activeIndex, setActiveIndex]);
 
-  const handleStart = () => {
-    if (!running) {
-      if (time === 0) {
-        setInitialTime((minutes * 60 + seconds) * 1000);
-        setTime((minutes * 60 + seconds) * 1000);
-      } else {
-        setInitialTime(time);
-      }
-      setRunning(true);
-    }
+  const handleSetMinutes = (mins) => {
+    const timerToEdit = timers[props.index];
+    const updatedTimer = {
+      ...timerToEdit,
+      minutes: mins,
+    };
+    const timersCopy = [...timers];
+    timersCopy.splice(props.index, 1, updatedTimer);
+    setTimers(timersCopy);
   };
 
-  const handleStop = () => {
-    setRunning(false);
+  const handleSetSeconds = (secs) => {
+    const timerToEdit = timers[props.index];
+    const updatedTimer = {
+      ...timerToEdit,
+      seconds: secs,
+    };
+    const timersCopy = [...timers];
+    timersCopy.splice(props.index, 1, updatedTimer);
+    setTimers(timersCopy);
   };
 
-  const handleReset = () => {
-    setInitialTime((minutes * 60 + seconds) * 1000);
-    setTime((minutes * 60 + seconds) * 1000);
-    if (running) {
-      setRunning(false);
-    }
-  };
-
-  const handleFastForward = () => {
-    setTime(0);
-    setRunning(false);
+  const handleSetRounds = (rnds) => {
+    const timerToEdit = timers[index];
+    const updatedTimer = {
+      ...timerToEdit,
+      rounds: rnds,
+    };
+    const timersCopy = [...timers];
+    timersCopy.splice(index, 1, updatedTimer);
+    setTimers(timersCopy);
   };
 
   return (
     <div className="timer">
       <DisplayRounds
         currentRound={currentRound}
-        initialRounds={rounds}
-        onRoundsChange={setRounds}
+        initialRounds={props.rounds}
+        onRoundsChange={handleSetRounds}
       />
       <Input
-        minutes={minutes}
-        setMinutes={setMinutes}
-        seconds={seconds}
-        setSeconds={setSeconds}
+        minutes={props.minutes}
+        setMinutes={handleSetMinutes}
+        seconds={props.seconds}
+        setSeconds={handleSetSeconds}
         disabled={running}
-        onStart={handleStart}
       />
-      <DisplayTime time={time} />
-      <Panel>
-        {running ? (
-          <Button onClick={handleStop}>
-            <FaPause />
-          </Button>
-        ) : (
-          <Button onClick={handleStart}>
-            <FaPlay />
-          </Button>
-        )}
-        <Button onClick={handleReset}>RESET</Button>
-        <Button onClick={handleFastForward}>
-          <FaFastForward />
-        </Button>
-      </Panel>
+      <div className="display-time">
+        <DisplayTime time={time} />
+      </div>
     </div>
   );
 };

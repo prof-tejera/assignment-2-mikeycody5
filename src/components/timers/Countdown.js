@@ -4,11 +4,8 @@ import Input from "../timers/shared/input.js";
 import { GlobalContext } from "../../App.js";
 
 const Countdown = (props) => {
-  const minutes = props.minutes;
-  const seconds = props.seconds;
   const index = props.index;
   const [time, setTime] = useState((props.minutes * 60 + props.seconds) * 1000);
-  const [running, setRunning] = useState(false);
   const {
     activeIndex,
     pausedIndex,
@@ -19,7 +16,7 @@ const Countdown = (props) => {
     timerIsRunning,
   } = useContext(GlobalContext);
   const isActive = props.index === activeIndex;
-  const isTimerPaused = props.index === pausedIndex && isPaused; // will need to setRunning(false)
+  const isTimerPaused = props.index === pausedIndex && isPaused; 
 
   useEffect(() => {
     let interval;
@@ -36,7 +33,7 @@ const Countdown = (props) => {
     }
 
     return () => clearInterval(interval);
-  }, [running, time, activeIndex]);
+  }, [time, activeIndex]);
 
   useEffect(() => {
     if (isActive) {
@@ -84,7 +81,7 @@ const Countdown = (props) => {
         setMinutes={handleSetMinutes}
         seconds={props.seconds}
         setSeconds={handleSetSeconds}
-        disabled={running}
+        disabled={isActive}
       />
       <DisplayTime time={time} />
       

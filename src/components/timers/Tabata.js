@@ -1,45 +1,34 @@
-import React, { useState, useEffect, useCallback, useContext } from "react";
-import Button from "../timers/shared/button.js";
+import React, { useState, useEffect, useContext } from "react";
 import DisplayTime from "../timers/shared/DisplayTime.js";
-import Panel from "../timers/shared/Panel.js";
 import Input from "../timers/shared/input.js";
 import ProgressBar from "../timers/shared/ProgressBar.js";
 import DisplayRounds from "../timers/shared/DisplayRounds";
-import { FaFastForward } from "react-icons/fa";
 import { GlobalContext } from "../../App.js";
 
 const Tabata = (props) => {
-  const minutes = props.minutes;
-  const seconds = props.seconds;
   const rounds = props.rounds;
   const index = props.index;
+  const initialTime = (props.minutes * 60 + props.seconds) * 1000;
 
-  const [time, setTime] = useState((props.minutes * 60 + props.seconds) * 1000);
+  const [time, setTime] = useState(initialTime);
 
   const [running, setRunning] = useState(false);
-  const [initialTime, setInitialTime] = useState(0);
   const [currentRound, setCurrentRound] = useState(1);
   const [isResting, setIsResting] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [, setProgress] = useState(0);
 
   const {
+    setActiveIndex,
     activeIndex,
     pausedIndex,
     isPaused,
     timers,
     setTimers,
-    setActiveIndex,
     timerIsRunning,
   } = useContext(GlobalContext);
   const isActive = props.index === activeIndex;
   const isTimerPaused = props.index === pausedIndex && isPaused;
 
-  useCallback(() => {
-    setCurrentRound((prevRound) => prevRound + 1);
-    setIsResting(true);
-    setTime(initialTime);
-    setRunning(true);
-  }, [initialTime]);
 
   const calculateProgress = () => {
     if (isResting) {
@@ -51,7 +40,7 @@ const Tabata = (props) => {
 
   useEffect(() => {
     let interval;
-
+  
     if (isActive && time > 0 && timerIsRunning) {
       interval = setInterval(() => {
         setTime((prevTime) => Math.max(0, prevTime - 1000));
@@ -69,35 +58,31 @@ const Tabata = (props) => {
         setCurrentRound((prevRound) => prevRound + 1);
         setTime(initialTime);
         setRunning(true);
-        setProgress(0); // Reset progress when starting a new round
+        setProgress(0); 
       } else {
         setIsResting(true);
         setTime(initialTime);
         setRunning(true);
       }
-
+  
       if (currentRound >= rounds) {
+        setActiveIndex(index + 1);
         setCurrentRound(1);
         setIsResting(false);
         setTime(0);
         setRunning(false);
-        setProgress(0); // Reset progress when the timer stops
+        setProgress(0); 
       }
     } else {
       console.log({ index, activeIndex });
       clearInterval(interval);
     }
-
+  
     return () => clearInterval(interval);
-  }, [running, time, isResting, initialTime, currentRound, rounds, activeIndex]);
-
+  }, [running, time, isResting, initialTime, currentRound, rounds, activeIndex, setActiveIndex]);
   
 
-  const handleFastForward = () => {
-    setTime(0);
-    setRunning(false);
-  };
-
+  
   const handleSetMinutes = (mins) => {
     const timerToEdit = timers[props.index];
     const updatedTimer = {

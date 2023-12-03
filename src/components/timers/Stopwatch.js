@@ -5,29 +5,46 @@ import Panel from "../timers/shared/Panel.js";
 import { FaFastForward } from "react-icons/fa";
 import { GlobalContext } from "../../App.js";
 
+
 const Stopwatch = (props) => {
-  const [time, setTime] = useState(0);
-  const [running, setRunning] = useState(false);
-  const { setActiveIndex } = useContext(GlobalContext);
+  const [time, setTime] = useState((props.minutes * 60 + props.seconds) * 1000);
+  const {
+    activeIndex,
+    setActiveIndex,
+  } = useContext(GlobalContext);
+  const isActive = props.index === activeIndex;
+
+//   const [time, setTime] = useState(0);
+//   const [running, setRunning] = useState(false);
+//   const { setActiveIndex } = useContext(GlobalContext);
   useEffect(() => {
     let interval;
 
-    if (running) {
+    if (isActive) {
       interval = setInterval(() => {
-        setTime((prevTime) => prevTime + 10);
-      }, 10);
+        setTime((prevTime) => prevTime + 1000);
+      }, 1000);
     } else {
       clearInterval(interval);
     }
 
     return () => clearInterval(interval);
-  }, [running]);
+  }, [isActive, activeIndex]);
 
-  
+  const handleFastForward = () => {
+    setActiveIndex(props.index + 1);
+    setTime(0);
+  };
+
 
   return (
     <div className="stopwatch">
       <DisplayTime time={time} />
+      <Panel>
+      <Button onClick={handleFastForward}>
+          <FaFastForward />
+        </Button>
+      </Panel>
     </div>
   );
 };

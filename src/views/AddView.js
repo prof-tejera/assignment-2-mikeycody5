@@ -184,10 +184,18 @@ const AddView = ({ onRemoveTimer }) => {
       );
     }
     if (timerItem.componentType === "STOPWATCH") {
-      component = <Stopwatch index={index} />;
+      component = <Stopwatch 
+      minutes={timerItem.minutes}
+      seconds={timerItem.seconds}
+      index={index} />;
     }
     if (timerItem.componentType === "XY") {
-      component = <XY index={index} />;
+      component = <XY 
+      index={index}
+      minutes={timerItem.minutes}
+      seconds={timerItem.seconds}
+      rounds={timerItem.rounds}
+    />;
     }
     return component;
   };
